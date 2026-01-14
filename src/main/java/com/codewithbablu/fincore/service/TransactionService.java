@@ -4,6 +4,7 @@ import com.codewithbablu.fincore.model.Transaction;
 import org.springframework.stereotype.Service;
 import java.util.concurrent.ExecutorService;
 
+@Service
 public class TransactionService {
 
     private final ExecutorService taskExecutor;
@@ -13,6 +14,9 @@ public class TransactionService {
     }
 
     public Transaction createTransaction(double amount, String type){
+        if (amount <= 0) {
+            throw new IllegalArgumentException("Amount must be positive");
+        }
         Transaction txn = new Transaction(amount, type);
 
         // Logic 2 : Async Processing (Fire and Forget)
