@@ -1,6 +1,7 @@
 package com.codewithbablu.fincore.controller;
 
 
+import com.codewithbablu.fincore.dto.TransactionRequest;
 import com.codewithbablu.fincore.model.Transaction;
 import com.codewithbablu.fincore.service.TransactionService;
 import org.springframework.web.bind.annotation.*;
@@ -17,8 +18,8 @@ public class TransactionController {
     }
 
     @PostMapping
-    public Transaction create(@RequestParam double amount, @RequestParam String type){
-        return service.createTransaction(amount, type);
+    public Transaction create(@RequestParam TransactionRequest request){
+        return service.createTransaction(request);
     }
 
     @GetMapping
