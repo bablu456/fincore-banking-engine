@@ -22,7 +22,7 @@ public class TransactionService {
         if (amount <= 0) {
             throw new IllegalArgumentException("Amount must be positive");
         }
-        Transaction txn = new Transaction(amount, type);
+        Transaction txn = new Transaction(id, amount, type, timestamp, newStatus);
 
         // Logic 2 : Async Processing (Fire and Forget)
         taskExecutor.submit(() ->{
