@@ -5,6 +5,8 @@ import com.codewithbablu.fincore.model.Transaction;
 import com.codewithbablu.fincore.service.TransactionService;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/transactions")
 public class TransactionController {
@@ -19,8 +21,8 @@ public class TransactionController {
         return service.createTransaction(amount, type);
     }
 
-    @GetMapping("/ping")
-    public String healthCheck(){
-        return "Fincore Engine is Running ";
+    @GetMapping
+    public List<Transaction> getAll(){
+        return service.getAllTransactions();
     }
 }
