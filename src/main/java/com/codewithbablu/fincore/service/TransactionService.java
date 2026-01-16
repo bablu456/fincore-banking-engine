@@ -1,6 +1,8 @@
 package com.codewithbablu.fincore.service;
 
+import com.codewithbablu.fincore.dto.TransactionRequest;
 import com.codewithbablu.fincore.model.Transaction;
+import com.codewithbablu.fincore.model.TransactionStatus;
 import com.codewithbablu.fincore.repository.TransactionRepository;
 import org.springframework.stereotype.Service;
 
@@ -18,26 +20,35 @@ public class TransactionService {
         this.taskExecutor = taskExecutor;
     }
 
-    public Transaction createTransaction(double amount, String type){
-        if (amount <= 0) {
+    public Transaction createTransaction(TransactionRequest request){
+        // 1. Validation
+        if (request.amount()<=0) {
             throw new IllegalArgumentException("Amount must be positive");
         }
-        Transaction txn = new Transaction(id, amount, type, timestamp, newStatus);
+        // 2. Convert DTO to Entity (Status = Pending initially
+        Transaction txn = new Transaction(request.amount(), request.type());
 
-        // Logic 2 : Async Processing (Fire and Forget)
-        taskExecutor.submit(() ->{
-            System.out.println("Processing " + txn.id() + " On Thread "+Thread.currentThread());
+
+        repository.save(txn);
+
+        taskExecutor.submit(() -> {
             try{
-                Thread.sleep(500);
-                // Main Change: Ab hum data save kar rahe hain
-                repository.save(txn);
-                System.out.println("Completed " + txn.id());
-            }catch (InterruptedException e){
-                Thread.currentThread().interrupt();
+                Transaction processingTxn = txn.withStatus(TransactionStatus.PROCESSING);
+                repository.save(processingTxn);
+
+                Thread.sleep(2000);
+
+                Transaction successTxn = processingTxn.withStatus(TransactionStatus.SUCCESS);
+                repository.save(successTxn);
+
+                System.out.println("Transaction Completed: "+txn.id());
+            }catch (Exception e){
+                Transaction failedTxn = txn.withStatus(TransactionStatus.FAILED);
+                repository.save(failedTxn);
+                System.out.println(" Transaction Failed : "+txn.id());
             }
         });
 
-        repository.save(txn);
         return txn;
     }
 
