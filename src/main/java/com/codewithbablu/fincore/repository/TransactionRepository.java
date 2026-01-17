@@ -2,12 +2,14 @@ package com.codewithbablu.fincore.repository;
 
 
 import com.codewithbablu.fincore.model.Transaction;
+import com.codewithbablu.fincore.model.TransactionStatus;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 @Repository
 public class TransactionRepository {
@@ -30,6 +32,12 @@ public class TransactionRepository {
     // Optional Java 8+ ka feature hai. ye box jaisa hai ye to item hoga, ya empty hoga
     public Optional<Transaction> findById(String id) {
     return Optional.ofNullable(transactionStore.get(id));
+    }
+
+    public List<Transaction> findByStatus(TransactionStatus status){
+        return transactionStore.values().stream()
+                .filter(txn -> txn.status() == status)
+                .collect(Collectors.toList());
     }
 
 }
