@@ -56,4 +56,12 @@ public class TransactionService {
         return repository.findAll();
     }
 
+    // ... class ke andar ...
+    public Transaction forceFailTransaction(double amount) {
+        Transaction txn = new Transaction(amount, "TEST_FAIL");
+        Transaction failed = txn.withStatus(TransactionStatus.FAILED);
+        repository.save(failed);
+        return failed;
+    }
+
 }
