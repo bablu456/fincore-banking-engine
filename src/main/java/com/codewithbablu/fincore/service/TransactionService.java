@@ -54,4 +54,18 @@ public class TransactionService {
     }
 
 
+    public List<Transaction> getAllTransactions() {
+        return getAllTransactions();
+    }
+
+    public Transaction forceFailTransaction(double amount) {
+        Transaction txn = new Transaction(
+                UUID.randomUUID().toString(),
+                amount,
+                "TEST_FAIL",
+                LocalDateTime.now(),
+                TransactionStatus.FAILED
+        );
+        return repository.save(txn);
+    }
 }

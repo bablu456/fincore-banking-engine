@@ -29,12 +29,7 @@ public class TransactionController {
 
     @PostMapping("/simulate-fail")
     public Transaction createFakeFailed(@RequestParam double amount) {
-        Transaction txn = new Transaction(amount, "TEST_FAIL");
-        // Zabardasti FAILED status set kar diya
-        Transaction failedTxn = txn.withStatus(com.codewithbablu.fincore.model.TransactionStatus.FAILED);
-        // Repository access karne ke liye service me method chahiye hoga,
-        // par abhi ke liye hum service ke through hi save karwa sakte hain agar method ho.
-        // Chalo simple rakhte hain, hum Service me ek naya method banate hain.
+
         return service.forceFailTransaction(amount);
     }
 
