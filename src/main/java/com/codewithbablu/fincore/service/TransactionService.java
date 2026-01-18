@@ -6,7 +6,9 @@ import com.codewithbablu.fincore.model.TransactionStatus;
 import com.codewithbablu.fincore.repository.TransactionRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 
 @Service
@@ -21,47 +23,35 @@ public class TransactionService {
     }
 
     public Transaction createTransaction(TransactionRequest request){
-        // 1. Validation
-        if (request.amount()<=0) {
-            throw new IllegalArgumentException("Amount must be positive");
-        }
-        // 2. Convert DTO to Entity (Status = Pending initially
-        Transaction txn = new Transaction(request.amount(), request.type());
 
-
+        Transaction txn = new Transaction(
+                UUID.randomUUID().toString(),
+                request.amount(),
+                request.type(),
+                LocalDateTime.now(),
+                TransactionStatus.PENDING
+        );
         repository.save(txn);
 
         taskExecutor.submit(() -> {
             try{
-                Transaction processingTxn = txn.withStatus(TransactionStatus.PROCESSING);
-                repository.save(processingTxn);
+                txn.setStatus(TransactionStatus.PROCESSING);
+                repository.save(txn);
 
                 Thread.sleep(2000);
 
-                Transaction successTxn = processingTxn.withStatus(TransactionStatus.SUCCESS);
-                repository.save(successTxn);
+                txn.setStatus(TransactionStatus.SUCCESS);
+                repository.save(txn);
 
-                System.out.println("Transaction Completed: "+txn.id());
+                System.out.println("Transaction Completed: "+txn.getId());
             }catch (Exception e){
-                Transaction failedTxn = txn.withStatus(TransactionStatus.FAILED);
-                repository.save(failedTxn);
-                System.out.println(" Transaction Failed : "+txn.id());
+                txn.setStatus(TransactionStatus.FAILED);
+                repository.save(txn);
+                System.out.println("Transaction Failed : "+txn.getId());
             }
         });
-
         return txn;
     }
 
-    public List<Transaction> getAllTransactions(){
-        return repository.findAll();
-    }
-
-    // ... class ke andar ...
-    public Transaction forceFailTransaction(double amount) {
-        Transaction txn = new Transaction(amount, "TEST_FAIL");
-        Transaction failed = txn.withStatus(TransactionStatus.FAILED);
-        repository.save(failed);
-        return failed;
-    }
 
 }
