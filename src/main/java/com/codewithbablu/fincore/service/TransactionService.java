@@ -74,8 +74,8 @@ public class TransactionService {
     }
 
     public Map<String, Object> getDashboardStats(){
-        Double totalAmount = repository.selectTotalSuccessAmount();
-        long failedCount = (long) repository.countFailedTransaction();
+        Double totalAmount = repository.selectTotalAmountByStatus(TransactionStatus.SUCCESS);
+        double failedCount = repository.countByStatus(TransactionStatus.FAILED);
 
         return Map.of(
                 "total_success_volume", totalAmount!=null ? totalAmount : 0.0,

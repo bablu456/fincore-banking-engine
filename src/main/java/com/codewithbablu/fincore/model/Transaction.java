@@ -1,11 +1,17 @@
 package com.codewithbablu.fincore.model;
 
+import jakarta.persistence.*;
+import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.Table;
 
 import java.time.LocalDateTime;
 // 'record' automatically creates constructor, getters, and toString. Clean!
+@Entity
+@Table(name = "transactions")
 public class Transaction {
+    @Id
       private   String id;
       private   double amount;
       private   String type;// "CREDIT" or "DEBIT"
