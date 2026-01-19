@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 
@@ -70,5 +71,16 @@ public class TransactionService {
                 TransactionStatus.FAILED
         );
         return repository.save(txn);
+    }
+
+    public Map<String, Object> getDashboardStats(){
+        Double totalAmount = repository.selectTotalSuccessAmount();
+        long failedCount = (long) repository.countFailedTransaction();
+
+        return Map.of(
+                "total_success_volume", totalAmount!=null ? totalAmount : 0.0,
+                "failed_transactions", failedCount,
+                "server_time", java.time.LocalDateTime.now()
+        );
     }
 }

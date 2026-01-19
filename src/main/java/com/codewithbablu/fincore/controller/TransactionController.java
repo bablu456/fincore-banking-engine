@@ -7,6 +7,7 @@ import com.codewithbablu.fincore.service.TransactionService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/transactions")
@@ -31,6 +32,11 @@ public class TransactionController {
     public Transaction createFakeFailed(@RequestParam double amount) {
 
         return service.forceFailTransaction(amount);
+    }
+
+    @GetMapping("/dashboard")
+    public Map<String, Object> getStats(){
+        return service.getDashboardStats();
     }
 
 }
