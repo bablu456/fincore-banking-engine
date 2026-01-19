@@ -24,6 +24,9 @@ public class TransactionService {
 
     public Transaction createTransaction(TransactionRequest request){
 
+        if(request.amount() <=0){
+            throw new IllegalArgumentException("Amount must be positive!");
+        }
         Transaction txn = new Transaction(
                 UUID.randomUUID().toString(),
                 request.amount(),
@@ -55,7 +58,7 @@ public class TransactionService {
 
 
     public List<Transaction> getAllTransactions() {
-        return getAllTransactions();
+        return repository.findAll();
     }
 
     public Transaction forceFailTransaction(double amount) {
