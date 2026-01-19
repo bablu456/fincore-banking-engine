@@ -30,13 +30,14 @@ public class TransactionCleanupService {
         System.out.println(" Scheduler Found "+ failedTxns.size()+" failed transactions. Retrying...");
 
         for(Transaction txn : failedTxns){
-            Transaction retryTxn = txn.withStatus(TransactionStatus.PROCESSING);
-            repository.save(retryTxn);
 
-            System.out.println(" Retrying "+txn.id());
+            System.out.println("⚠️ Scheduler Found " + failedTxns.size() + " failed transactions.");
 
-            Transaction succesTxn = retryTxn.withStatus(TransactionStatus.SUCCESS);
-            repository.save(succesTxn);
+            txn.setStatus(TransactionStatus.PROCESSING);
+            repository.save(txn);
+
+            txn.setStatus(TransactionStatus.SUCCESS); // Setter
+            repository.save(txn);
         }
     }
 }
