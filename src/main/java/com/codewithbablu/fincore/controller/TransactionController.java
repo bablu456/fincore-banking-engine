@@ -4,6 +4,7 @@ package com.codewithbablu.fincore.controller;
 import com.codewithbablu.fincore.dto.TransactionRequest;
 import com.codewithbablu.fincore.model.Transaction;
 import com.codewithbablu.fincore.service.TransactionService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,7 +20,7 @@ public class TransactionController {
     }
 
     @PostMapping
-    public Transaction create(@RequestBody TransactionRequest request){
+    public Transaction create(@RequestBody @Valid TransactionRequest request){
         return service.createTransaction(request);
     }
 
