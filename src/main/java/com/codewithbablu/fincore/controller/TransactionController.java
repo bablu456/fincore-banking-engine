@@ -1,10 +1,12 @@
 package com.codewithbablu.fincore.controller;
 
 
+import com.codewithbablu.fincore.common.ApiResponse;
 import com.codewithbablu.fincore.dto.TransactionRequest;
 import com.codewithbablu.fincore.model.Transaction;
 import com.codewithbablu.fincore.service.TransactionService;
 import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,29 +17,36 @@ import java.util.Map;
 public class TransactionController {
 
     private final TransactionService service;
+
     public TransactionController(TransactionService service){
         this.service  = service;
     }
 
     @PostMapping
-    public Transaction create(@RequestBody @Valid TransactionRequest request){
-        return service.createTransaction(request);
+    public ResponseEntity<ApiResponse<Transaction>> create(@RequestBody @Valid TransactionRequest request){
+        Transaction txn = service.createTransaction(request);
+
+        return ResponseEntity.ok(ApiResponse.success("Transaction Accepted", txn));
     }
 
     @GetMapping
-    public List<Transaction> getAll(){
-        return service.getAllTransactions();
+    public ResponseEntity<ApiResponse<List<Transaction>>> getAll(){
+        List<Transaction> list = service.getAllTransactions();
+        return ResponseEntity.ok(ApiResponse.success("Fetched All Transaction", list));
     }
 
-    @PostMapping("/simulate-fail")
-    public Transaction createFakeFailed(@RequestParam double amount) {
 
-        return service.forceFailTransaction(amount);
+    @PostMapping("/dashboard")
+    public ResponseEntity<ApiResponse<Map<String, Object>>> getStatus(){
+        Map<String, Object> stats = service.getDashboardStats();
+
+        return ResponseEntity.ok(ApiResponse.success("Dashboard Stats Loaded",stats));
     }
 
-    @GetMapping("/dashboard")
-    public Map<String, Object> getStats(){
-        return service.getDashboardStats();
-    }
+    @GetMapping("/simulate-fail")
+    public ResponseEntity<ApiResponse<Transaction>> createFailed(@RequestBody double amount){
+        Transaction txn = service.forceFailTransaction(amount);
+        return ResponseEntity.ok(ApiResponse.success("Simulated Failure Created",txn));
 
+    }
 }
