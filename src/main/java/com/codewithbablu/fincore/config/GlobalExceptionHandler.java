@@ -13,7 +13,7 @@ import java.util.Map;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<ApiResponse<void>> handleValidationErrors(MethodArgumentNotValidException ex){
+    public ResponseEntity<ApiResponse<Void>> handleValidationErrors(MethodArgumentNotValidException ex){
 
         String errorMsg = ex.getBindingResult().getFieldError().getDefaultMessage();
         return ResponseEntity
