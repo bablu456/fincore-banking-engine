@@ -8,12 +8,15 @@ import com.codewithbablu.fincore.service.TransactionService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 import java.util.List;
 import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/transactions")
+@Tag(name = "Transaction Management", description = "Create, View and Analyze Transactions")
 public class TransactionController {
 
     private final TransactionService service;
@@ -23,6 +26,7 @@ public class TransactionController {
     }
 
     @PostMapping
+    @Operation(summary = "Create Transaction", description = "Creates a new transaction. Starts in PENDING state.")
     public ResponseEntity<ApiResponse<Transaction>> create(@RequestBody @Valid TransactionRequest request){
         Transaction txn = service.createTransaction(request);
 
@@ -30,6 +34,7 @@ public class TransactionController {
     }
 
     @GetMapping
+    @Operation(summary = "Get All Transactions", description = "Returns list of all transactions from H2 Database.")
     public ResponseEntity<ApiResponse<List<Transaction>>> getAll(){
         List<Transaction> list = service.getAllTransactions();
         return ResponseEntity.ok(ApiResponse.success("Fetched All Transaction", list));
@@ -37,6 +42,7 @@ public class TransactionController {
 
 
     @PostMapping("/dashboard")
+    @Operation(summary = "Analytics Dashboard", description = "Real-time stats of Success vs Failed volumes.")
     public ResponseEntity<ApiResponse<Map<String, Object>>> getStatus(){
         Map<String, Object> stats = service.getDashboardStats();
 
