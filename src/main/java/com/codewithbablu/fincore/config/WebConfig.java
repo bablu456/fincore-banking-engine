@@ -12,9 +12,13 @@ public class WebConfig implements WebMvcConfigurer {
     private ApiKeyInterceptor apiKeyInterceptor;
 
     @Override
-    public void addInterceptors(InterceptorRegistry registry){
-
+    public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(apiKeyInterceptor)
-                .addPathPatterns("/api/**");
+                .addPathPatterns("/api/**") // 1. Pehle batao kaha lagana hai
+                .excludePathPatterns(       // 2. Fir batao kaha NAHI lagana hai
+                        "/v3/api-docs/**",
+                        "/swagger-ui/**",
+                        "/swagger-ui.html"
+                ); // 👈 Semicolon sirf yaha aayega (End mein)
     }
 }
