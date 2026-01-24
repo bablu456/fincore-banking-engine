@@ -12,6 +12,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 // ✅ Static Imports for Testing
+import java.util.concurrent.ExecutorService;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -21,6 +23,9 @@ public class TransactionServiceTest {
 
     @Mock
     private TransactionRepository repository;
+
+    @Mock
+    private ExecutorService taskExecutor;
 
     @InjectMocks
     private TransactionService service;
